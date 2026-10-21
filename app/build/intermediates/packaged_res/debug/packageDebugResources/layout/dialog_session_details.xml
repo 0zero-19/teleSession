@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/bg_card"
+    android:background="@color/glass_surface_dialog"
     android:orientation="vertical"
     android:padding="24dp">
 
@@ -11,8 +11,8 @@
         android:id="@+id/tvDetailTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Session Details"
-        android:textColor="@color/text_primary"
+        android:text="Session Information"
+        android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -21,22 +21,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textColor="@color/tg_blue"
+        android:textColor="@color/mono_text_secondary"
         android:textSize="14sp"
         android:textStyle="bold" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginVertical="12dp"
-        android:background="@color/border_dark" />
+        android:layout_marginVertical="14dp"
+        android:background="@color/glass_stroke_subtle" />
 
     <TextView
         android:id="@+id/tvDetailContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="4dp"
-        android:textColor="@color/text_secondary"
+        android:lineSpacingExtra="5dp"
+        android:textColor="@color/mono_text_secondary"
         android:textSize="13sp" />
 
     <LinearLayout
@@ -52,16 +52,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Close"
-            android:textColor="@color/text_secondary" />
+            android:textColor="@color/mono_text_secondary" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDetailTerminate"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:backgroundTint="@color/color_danger"
             android:text="Terminate Session"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            app:strokeColor="@color/glass_stroke_medium" />
     </LinearLayout>
 
 </LinearLayout>

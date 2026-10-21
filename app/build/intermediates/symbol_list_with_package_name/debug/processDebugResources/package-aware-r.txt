@@ -1459,6 +1459,16 @@ color error_color_material_dark
 color error_color_material_light
 color foreground_material_dark
 color foreground_material_light
+color glass_bg_black
+color glass_bg_deep
+color glass_stroke_active
+color glass_stroke_medium
+color glass_stroke_strong
+color glass_stroke_subtle
+color glass_surface_1
+color glass_surface_2
+color glass_surface_3
+color glass_surface_dialog
 color highlighted_text_material_dark
 color highlighted_text_material_light
 color m3_appbar_overlay_color
@@ -2060,6 +2070,9 @@ color material_timepicker_button_stroke
 color material_timepicker_clock_text_color
 color material_timepicker_clockface
 color material_timepicker_modebutton_tint
+color mono_text_muted
+color mono_text_primary
+color mono_text_secondary
 color mtrl_btn_bg_color_selector
 color mtrl_btn_ripple_color
 color mtrl_btn_stroke_color_selector
@@ -3046,6 +3059,7 @@ drawable bg_badge_danger
 drawable bg_badge_official
 drawable bg_card_highlight_rounded
 drawable bg_card_rounded
+drawable bg_glass_avatar
 drawable btn_checkbox_checked_mtrl
 drawable btn_checkbox_checked_to_unchecked_mtrl_animation
 drawable btn_checkbox_unchecked_mtrl
@@ -3059,6 +3073,8 @@ drawable design_ic_visibility
 drawable design_ic_visibility_off
 drawable design_password_eye
 drawable design_snackbar_background
+drawable ic_account_switch
+drawable ic_add
 drawable ic_arrow_back_black_24
 drawable ic_call_answer
 drawable ic_call_answer_low
@@ -3066,6 +3082,7 @@ drawable ic_call_answer_video
 drawable ic_call_answer_video_low
 drawable ic_call_decline
 drawable ic_call_decline_low
+drawable ic_check
 drawable ic_clear_black_24
 drawable ic_clock_black_24dp
 drawable ic_device_laptop
@@ -3270,6 +3287,8 @@ id bounce
 id bounceBoth
 id bounceEnd
 id bounceStart
+id btnAccountSwitcher
+id btnAddAccount
 id btnAuthorizeDevice
 id btnBackToPhone
 id btnCustomApiSettings
@@ -3283,6 +3302,7 @@ id btnMethodPhone
 id btnMethodQr
 id btnRefresh
 id btnRefreshQr
+id btnRemoveAccount
 id btnResendCode
 id btnResetApi
 id btnSaveApi
@@ -3295,6 +3315,7 @@ id buttonPanel
 id cache_measures
 id callMeasure
 id cancel_button
+id cardAccountItem
 id cardCurrentSession
 id cardErrorBanner
 id cardSession
@@ -3436,6 +3457,7 @@ id invisible
 id inward
 id italic
 id item_touch_helper_previous_elevation
+id ivAccountCheck
 id ivCurrentDeviceIcon
 id ivDeviceIcon
 id ivQrCode
@@ -3444,6 +3466,7 @@ id jumpToStart
 id labeled
 id layout
 id layoutEmptySessions
+id layoutQuarantineNotice
 id left
 id leftToRight
 id legacy
@@ -3579,6 +3602,7 @@ id right_icon
 id right_side
 id rounded
 id row_index_key
+id rvAccounts
 id rvSessions
 id save_non_transition_alpha
 id save_overlay_view
@@ -3699,7 +3723,14 @@ id transition_position
 id transition_scene_layoutid_cache
 id transition_transform
 id triangle
+id tvAccountAvatar
+id tvAccountAvatarInitials
+id tvAccountName
+id tvAccountPhone
+id tvActiveAccountName
+id tvActiveAccountPhone
 id tvAppName
+id tvAuthAccountLabel
 id tvCodeSentNotice
 id tvCurrentAppName
 id tvCurrentDeviceModel
@@ -3714,7 +3745,7 @@ id tvLastActive
 id tvLocationIp
 id tvOtherSessionsHeader
 id tvPasswordHint
-id tvUserSubtitle
+id tvQuarantineText
 id unchecked
 id uniform
 id unlabeled
@@ -3868,6 +3899,7 @@ layout abc_select_dialog_material
 layout abc_tooltip
 layout activity_auth
 layout activity_sessions
+layout bottom_sheet_accounts
 layout custom_dialog
 layout design_bottom_navigation_item
 layout design_bottom_sheet_dialog
@@ -3889,6 +3921,7 @@ layout dialog_manual_qr_link
 layout dialog_session_details
 layout ime_base_split_test_activity
 layout ime_secondary_split_test_activity
+layout item_account
 layout item_session
 layout m3_alert_dialog
 layout m3_alert_dialog_actions
@@ -4447,6 +4480,7 @@ style MaterialAlertDialog_MaterialComponents_Title_Panel
 style MaterialAlertDialog_MaterialComponents_Title_Panel_CenterStacked
 style MaterialAlertDialog_MaterialComponents_Title_Text
 style MaterialAlertDialog_MaterialComponents_Title_Text_CenterStacked
+style ModalBottomSheetDialogStyle
 style Platform_AppCompat
 style Platform_AppCompat_Light
 style Platform_MaterialComponents
@@ -4478,6 +4512,8 @@ style RtlOverlay_Widget_AppCompat_Search_DropDown_Text
 style RtlOverlay_Widget_AppCompat_SearchView_MagIcon
 style RtlUnderlay_Widget_AppCompat_ActionButton
 style RtlUnderlay_Widget_AppCompat_ActionButton_Overflow
+style ShapeAppearance_GlassBottomSheet
+style ShapeAppearance_GlassDialog
 style ShapeAppearance_M3_Comp_Badge_Large_Shape
 style ShapeAppearance_M3_Comp_Badge_Shape
 style ShapeAppearance_M3_Comp_BottomAppBar_Container_Shape
@@ -4766,6 +4802,8 @@ style Theme_MaterialComponents_Light_NoActionBar_Bridge
 style Theme_MaterialComponents_NoActionBar
 style Theme_MaterialComponents_NoActionBar_Bridge
 style Theme_TelegramSessionManager
+style Theme_TelegramSessionManager_BottomSheet
+style Theme_TelegramSessionManager_Dialog
 style ThemeOverlay_AppCompat
 style ThemeOverlay_AppCompat_ActionBar
 style ThemeOverlay_AppCompat_Dark

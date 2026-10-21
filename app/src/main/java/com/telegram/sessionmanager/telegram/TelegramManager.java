@@ -1,18 +1,18 @@
 package com.telegram.sessionmanager.telegram;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.telegram.sessionmanager.account.AccountModel;
+import com.telegram.sessionmanager.account.AccountStorage;
 import com.telegram.sessionmanager.util.SecurityHelper;
 
-import org.drinkless.tdlib.Client;
 import org.drinkless.tdlib.TdApi;
 
-import java.io.File;
-import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TelegramManager {
@@ -29,19 +29,23 @@ public class TelegramManager {
         void onAuthStateChanged(TdApi.AuthorizationState state);
     }
 
-    private final Context appContext;
-    private final Handler mainHandler;
-    private final SecurityHelper securityHelper;
-    private final CopyOnWriteArrayList<AuthStateListener> authStateListeners = new CopyOnWriteArrayList<>();
+    public interface AccountChangeListener {
+        void onActiveAccountChanged(AccountModel account);
+    }
 
-    private Client client;
-    private TdApi.AuthorizationState currentAuthState;
-    private TdApi.User currentUser;
-    private boolean isInitialized = false;
+    private final Context appContext;
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private final AccountStorage accountStorage;
+    private final SecurityHelper securityHelper;
+    private final Map<String, TelegramAccountClient> clientMap = new ConcurrentHashMap<>();
+    private final CopyOnWriteArrayList<AuthStateListener> authStateListeners = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<AccountChangeListener> accountChangeListeners = new CopyOnWriteArrayList<>();
+
+    private TelegramAccountClient activeClient;
 
     private TelegramManager(Context context) {
         this.appContext = context.getApplicationContext();
-        this.mainHandler = new Handler(Looper.getMainLooper());
+        this.accountStorage = new AccountStorage(appContext);
         this.securityHelper = new SecurityHelper(appContext);
     }
 
@@ -56,44 +60,96 @@ public class TelegramManager {
         return instance;
     }
 
+    public AccountStorage getAccountStorage() {
+        return accountStorage;
+    }
+
+    public SecurityHelper getSecurityHelper() {
+        return securityHelper;
+    }
+
     public synchronized void initialize() {
-        if (isInitialized && client != null) {
-            return;
+        AccountModel activeAcc = accountStorage.getActiveAccount();
+        if (activeAcc == null) {
+            activeAcc = accountStorage.createNewAccount();
         }
-
-        try {
-            // Disable verbose internal TDLib logging for cleaner performance
-            Client.execute(new TdApi.SetLogVerbosityLevel(1));
-        } catch (Exception e) {
-            Log.w(TAG, "Failed to set log verbosity", e);
-        }
-
-        client = Client.create(
-                this::handleUpdate,
-                e -> Log.e(TAG, "Update exception: " + e.getMessage(), e),
-                e -> Log.e(TAG, "Default exception: " + e.getMessage(), e)
-        );
-
-        isInitialized = true;
+        setActiveClient(activeAcc.getId());
     }
 
-    public synchronized void restartClient() {
-        isInitialized = false;
+    public synchronized TelegramAccountClient getClientForAccount(String accountId) {
+        if (accountId == null) return null;
+        TelegramAccountClient client = clientMap.get(accountId);
+        if (client == null) {
+            AccountModel acc = accountStorage.getAccountById(accountId);
+            if (acc == null) return null;
+            client = new TelegramAccountClient(acc, accountStorage, securityHelper);
+            client.initialize();
+            clientMap.put(accountId, client);
+        }
+        return client;
+    }
+
+    public synchronized TelegramAccountClient getActiveClient() {
+        if (activeClient == null) {
+            initialize();
+        }
+        return activeClient;
+    }
+
+    public synchronized void setActiveClient(String accountId) {
+        AccountModel targetAcc = accountStorage.getAccountById(accountId);
+        if (targetAcc == null) return;
+
+        accountStorage.setActiveAccountId(accountId);
+
+        if (activeClient != null) {
+            activeClient.removeAuthStateListener(internalAuthStateListener);
+        }
+
+        activeClient = getClientForAccount(accountId);
+        if (activeClient != null) {
+            activeClient.addAuthStateListener(internalAuthStateListener);
+        }
+
+        mainHandler.post(() -> {
+            for (AccountChangeListener l : accountChangeListeners) {
+                l.onActiveAccountChanged(targetAcc);
+            }
+        });
+    }
+
+    public synchronized AccountModel addNewAccount() {
+        AccountModel newAcc = accountStorage.createNewAccount();
+        setActiveClient(newAcc.getId());
+        return newAcc;
+    }
+
+    public synchronized void removeAccount(String accountId) {
+        TelegramAccountClient client = clientMap.remove(accountId);
         if (client != null) {
-            try {
-                client.send(new TdApi.Close(), object -> {});
-            } catch (Exception ignored) {}
-            client = null;
+            client.close();
         }
-        initialize();
+        accountStorage.deleteAccount(accountId);
+
+        AccountModel newActive = accountStorage.getActiveAccount();
+        if (newActive != null) {
+            setActiveClient(newActive.getId());
+        }
     }
+
+    private final TelegramAccountClient.AuthStateListener internalAuthStateListener =
+            (account, state) -> mainHandler.post(() -> {
+                for (AuthStateListener l : authStateListeners) {
+                    l.onAuthStateChanged(state);
+                }
+            });
 
     public void addAuthStateListener(AuthStateListener listener) {
         if (!authStateListeners.contains(listener)) {
             authStateListeners.add(listener);
         }
-        if (currentAuthState != null) {
-            mainHandler.post(() -> listener.onAuthStateChanged(currentAuthState));
+        if (activeClient != null && activeClient.getCurrentAuthState() != null) {
+            mainHandler.post(() -> listener.onAuthStateChanged(activeClient.getCurrentAuthState()));
         }
     }
 
@@ -101,172 +157,88 @@ public class TelegramManager {
         authStateListeners.remove(listener);
     }
 
+    public void addAccountChangeListener(AccountChangeListener listener) {
+        if (!accountChangeListeners.contains(listener)) {
+            accountChangeListeners.add(listener);
+        }
+        AccountModel active = accountStorage.getActiveAccount();
+        if (active != null) {
+            mainHandler.post(() -> listener.onActiveAccountChanged(active));
+        }
+    }
+
+    public void removeAccountChangeListener(AccountChangeListener listener) {
+        accountChangeListeners.remove(listener);
+    }
+
     public TdApi.AuthorizationState getCurrentAuthState() {
-        return currentAuthState;
+        return activeClient != null ? activeClient.getCurrentAuthState() : null;
     }
 
     public TdApi.User getCurrentUser() {
-        return currentUser;
-    }
-
-    private void handleUpdate(TdApi.Object object) {
-        if (object == null) return;
-
-        if (object.getConstructor() == TdApi.UpdateAuthorizationState.CONSTRUCTOR) {
-            TdApi.UpdateAuthorizationState update = (TdApi.UpdateAuthorizationState) object;
-            onAuthorizationStateUpdated(update.authorizationState);
-        } else if (object.getConstructor() == TdApi.UpdateUser.CONSTRUCTOR) {
-            TdApi.UpdateUser updateUser = (TdApi.UpdateUser) object;
-            if (currentUser != null && currentUser.id == updateUser.user.id) {
-                currentUser = updateUser.user;
-            }
-        }
-    }
-
-    private void onAuthorizationStateUpdated(TdApi.AuthorizationState state) {
-        this.currentAuthState = state;
-        Log.i(TAG, "Authorization state changed to: " + state.getClass().getSimpleName());
-
-        if (state.getConstructor() == TdApi.AuthorizationStateWaitTdlibParameters.CONSTRUCTOR) {
-            sendTdlibParameters();
-        } else if (state.getConstructor() == TdApi.AuthorizationStateReady.CONSTRUCTOR) {
-            // Fetch current user details
-            fetchCurrentUser(null);
-        }
-
-        mainHandler.post(() -> {
-            for (AuthStateListener listener : authStateListeners) {
-                listener.onAuthStateChanged(state);
-            }
-        });
-    }
-
-    private void sendTdlibParameters() {
-        File dbDir = new File(appContext.getFilesDir(), "tdlib");
-        if (!dbDir.exists()) dbDir.mkdirs();
-
-        File filesDir = new File(appContext.getFilesDir(), "tdlib_files");
-        if (!filesDir.exists()) filesDir.mkdirs();
-
-        byte[] dbKey = securityHelper.getOrCreateDatabaseEncryptionKey();
-
-        TdApi.SetTdlibParameters params = new TdApi.SetTdlibParameters();
-        params.useTestDc = false;
-        params.databaseDirectory = dbDir.getAbsolutePath();
-        params.filesDirectory = filesDir.getAbsolutePath();
-        params.databaseEncryptionKey = dbKey;
-        params.useFileDatabase = true;
-        params.useChatInfoDatabase = false; // We do not manage chats
-        params.useMessageDatabase = false;  // We do not manage messages
-        params.useSecretChats = false;
-        params.apiId = securityHelper.getApiId();
-        params.apiHash = securityHelper.getApiHash();
-        params.systemLanguageCode = Locale.getDefault().getLanguage();
-        params.deviceModel = Build.MANUFACTURER + " " + Build.MODEL;
-        params.systemVersion = "Android " + Build.VERSION.RELEASE;
-        params.applicationVersion = "1.0.0";
-
-        send(params, new Callback<TdApi.Ok>() {
-            @Override
-            public void onSuccess(TdApi.Ok result) {
-                Log.d(TAG, "SetTdlibParameters succeeded");
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                Log.e(TAG, "SetTdlibParameters failed: " + code + " - " + message);
-            }
-        });
+        return activeClient != null ? activeClient.getCurrentUser() : null;
     }
 
     // =========================================================================
-    // Authentication Operations
+    // Delegates to active client
     // =========================================================================
 
     public void sendPhoneNumber(String phoneNumber, Callback<Void> callback) {
-        TdApi.SetAuthenticationPhoneNumber req = new TdApi.SetAuthenticationPhoneNumber(phoneNumber, null);
-        send(req, new Callback<TdApi.Ok>() {
-            @Override
-            public void onSuccess(TdApi.Ok result) {
-                if (callback != null) callback.onSuccess(null);
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                if (callback != null) callback.onError(code, message);
-            }
-        });
+        getActiveClient().sendPhoneNumber(phoneNumber, wrapCallback(callback));
     }
 
     public void checkAuthenticationCode(String code, Callback<Void> callback) {
-        TdApi.CheckAuthenticationCode req = new TdApi.CheckAuthenticationCode(code);
-        send(req, new Callback<TdApi.Ok>() {
-            @Override
-            public void onSuccess(TdApi.Ok result) {
-                if (callback != null) callback.onSuccess(null);
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                if (callback != null) callback.onError(code, message);
-            }
-        });
+        getActiveClient().checkAuthenticationCode(code, wrapCallback(callback));
     }
 
     public void checkAuthenticationPassword(String password, Callback<Void> callback) {
-        TdApi.CheckAuthenticationPassword req = new TdApi.CheckAuthenticationPassword(password);
-        send(req, new Callback<TdApi.Ok>() {
-            @Override
-            public void onSuccess(TdApi.Ok result) {
-                if (callback != null) callback.onSuccess(null);
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                if (callback != null) callback.onError(code, message);
-            }
-        });
+        getActiveClient().checkAuthenticationPassword(password, wrapCallback(callback));
     }
 
     public void requestQrCodeAuthentication(Callback<Void> callback) {
-        TdApi.RequestQrCodeAuthentication req = new TdApi.RequestQrCodeAuthentication(new long[0]);
-        send(req, new Callback<TdApi.Ok>() {
-            @Override
-            public void onSuccess(TdApi.Ok result) {
-                if (callback != null) callback.onSuccess(null);
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                if (callback != null) callback.onError(code, message);
-            }
-        });
+        getActiveClient().requestQrCodeAuthentication(wrapCallback(callback));
     }
 
     public void resendAuthenticationCode(Callback<Void> callback) {
-        TdApi.ResendAuthenticationCode req = new TdApi.ResendAuthenticationCode(null);
-        send(req, new Callback<TdApi.Ok>() {
-            @Override
-            public void onSuccess(TdApi.Ok result) {
-                if (callback != null) callback.onSuccess(null);
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                if (callback != null) callback.onError(code, message);
-            }
-        });
+        getActiveClient().resendAuthenticationCode(wrapCallback(callback));
     }
 
-    // =========================================================================
-    // Session Management Operations
-    // =========================================================================
-
     public void loadActiveSessions(Callback<TdApi.Sessions> callback) {
-        TdApi.GetActiveSessions req = new TdApi.GetActiveSessions();
-        send(req, new Callback<TdApi.Sessions>() {
+        getActiveClient().loadActiveSessions(wrapCallback(callback));
+    }
+
+    public void terminateSession(long sessionId, Callback<Void> callback) {
+        getActiveClient().terminateSession(sessionId, wrapCallback(callback));
+    }
+
+    public void terminateAllOtherSessions(Callback<Void> callback) {
+        getActiveClient().terminateAllOtherSessions(wrapCallback(callback));
+    }
+
+    public void confirmQrCodeAuthentication(String link, Callback<TdApi.Session> callback) {
+        getActiveClient().confirmQrCodeAuthentication(link, wrapCallback(callback));
+    }
+
+    public void fetchCurrentUser(Callback<TdApi.User> callback) {
+        getActiveClient().fetchCurrentUser(wrapCallback(callback));
+    }
+
+    public void logOut(Callback<Void> callback) {
+        getActiveClient().logOut(wrapCallback(callback));
+    }
+
+    public synchronized void restartClient() {
+        if (activeClient != null) {
+            activeClient.close();
+            clientMap.remove(activeClient.getAccount().getId());
+            activeClient = getClientForAccount(activeClient.getAccount().getId());
+        }
+    }
+
+    private <T> TelegramAccountClient.Callback<T> wrapCallback(Callback<T> callback) {
+        return new TelegramAccountClient.Callback<T>() {
             @Override
-            public void onSuccess(TdApi.Sessions result) {
+            public void onSuccess(T result) {
                 if (callback != null) callback.onSuccess(result);
             }
 
@@ -274,117 +246,6 @@ public class TelegramManager {
             public void onError(int code, String message) {
                 if (callback != null) callback.onError(code, message);
             }
-        });
-    }
-
-    public void terminateSession(long sessionId, Callback<Void> callback) {
-        TdApi.TerminateSession req = new TdApi.TerminateSession(sessionId);
-        send(req, new Callback<TdApi.Ok>() {
-            @Override
-            public void onSuccess(TdApi.Ok result) {
-                if (callback != null) callback.onSuccess(null);
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                if (callback != null) callback.onError(code, message);
-            }
-        });
-    }
-
-    public void terminateAllOtherSessions(Callback<Void> callback) {
-        TdApi.TerminateAllOtherSessions req = new TdApi.TerminateAllOtherSessions();
-        send(req, new Callback<TdApi.Ok>() {
-            @Override
-            public void onSuccess(TdApi.Ok result) {
-                if (callback != null) callback.onSuccess(null);
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                if (callback != null) callback.onError(code, message);
-            }
-        });
-    }
-
-    /**
-     * Authorizes another device by confirming the scanned QR code link (tg://login?token=...).
-     */
-    public void confirmQrCodeAuthentication(String link, Callback<TdApi.Session> callback) {
-        TdApi.ConfirmQrCodeAuthentication req = new TdApi.ConfirmQrCodeAuthentication(link);
-        send(req, new Callback<TdApi.Session>() {
-            @Override
-            public void onSuccess(TdApi.Session session) {
-                if (callback != null) callback.onSuccess(session);
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                if (callback != null) callback.onError(code, message);
-            }
-        });
-    }
-
-    public void fetchCurrentUser(Callback<TdApi.User> callback) {
-        TdApi.GetMe req = new TdApi.GetMe();
-        send(req, new Callback<TdApi.User>() {
-            @Override
-            public void onSuccess(TdApi.User user) {
-                currentUser = user;
-                if (callback != null) callback.onSuccess(user);
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                if (callback != null) callback.onError(code, message);
-            }
-        });
-    }
-
-    public void logOut(Callback<Void> callback) {
-        TdApi.LogOut req = new TdApi.LogOut();
-        send(req, new Callback<TdApi.Ok>() {
-            @Override
-            public void onSuccess(TdApi.Ok result) {
-                currentUser = null;
-                if (callback != null) callback.onSuccess(null);
-            }
-
-            @Override
-            public void onError(int code, String message) {
-                if (callback != null) callback.onError(code, message);
-            }
-        });
-    }
-
-    // =========================================================================
-    // Generic Send Helper with MainThread dispatch
-    // =========================================================================
-
-    @SuppressWarnings("unchecked")
-    public <T extends TdApi.Object> void send(TdApi.Function<T> function, Callback<T> callback) {
-        if (client == null) {
-            if (callback != null) {
-                mainHandler.post(() -> callback.onError(-1, "Telegram Client is not initialized"));
-            }
-            return;
-        }
-
-        client.send(function, object -> {
-            if (callback == null) return;
-
-            if (object.getConstructor() == TdApi.Error.CONSTRUCTOR) {
-                TdApi.Error error = (TdApi.Error) object;
-                mainHandler.post(() -> callback.onError(error.code, error.message));
-            } else {
-                mainHandler.post(() -> {
-                    try {
-                        callback.onSuccess((T) object);
-                    } catch (ClassCastException cce) {
-                        callback.onError(-2, "Unexpected response type: " + object.getClass().getSimpleName());
-                    }
-                });
-            }
-        });
+        };
     }
 }

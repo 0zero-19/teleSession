@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/bg_card"
+    android:background="@color/glass_surface_dialog"
     android:orientation="vertical"
     android:padding="24dp">
 
@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Telegram API Configuration"
-        android:textColor="@color/text_primary"
+        android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -19,8 +19,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:text="By default, official TDLib credentials are active. You can optionally supply your personal api_id and api_hash from my.telegram.org."
-        android:textColor="@color/text_secondary"
+        android:text="By default, official TDLib credentials are used. You can optionally supply your personal api_id and api_hash from my.telegram.org."
+        android:textColor="@color/mono_text_secondary"
         android:textSize="12sp" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:hint="API ID"
-        app:boxStrokeColor="@color/tg_blue">
+        app:boxStrokeColor="@color/white">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etApiId"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:maxLines="1"
-            android:textColor="@color/text_primary" />
+            android:textColor="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:hint="API Hash"
-        app:boxStrokeColor="@color/tg_blue">
+        app:boxStrokeColor="@color/white">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etApiHash"
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:inputType="text"
             android:maxLines="1"
-            android:textColor="@color/text_primary" />
+            android:textColor="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
@@ -72,16 +72,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Reset to Default"
-            android:textColor="@color/text_muted" />
+            android:textColor="@color/mono_text_muted" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSaveApi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:backgroundTint="@color/tg_blue"
+            android:backgroundTint="@color/white"
             android:text="Save &amp; Apply"
-            android:textColor="@color/white" />
+            android:textColor="@color/black" />
     </LinearLayout>
 
 </LinearLayout>

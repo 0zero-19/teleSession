@@ -28,6 +28,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 import com.telegram.sessionmanager.R;
+import com.telegram.sessionmanager.account.AccountModel;
 import com.telegram.sessionmanager.telegram.TelegramManager;
 import com.telegram.sessionmanager.util.QrHelper;
 import com.telegram.sessionmanager.util.TimeHelper;
@@ -36,12 +37,18 @@ import org.drinkless.tdlib.TdApi;
 
 public class SessionsActivity extends AppCompatActivity implements
         SessionAdapter.SessionClickListener,
-        TelegramManager.AuthStateListener {
+        TelegramManager.AuthStateListener,
+        TelegramManager.AccountChangeListener {
 
     private TelegramManager telegramManager;
     private SessionAdapter sessionAdapter;
 
-    private TextView tvUserSubtitle;
+    // Account Switcher Header Views
+    private MaterialCardView btnAccountSwitcher;
+    private TextView tvAccountAvatarInitials;
+    private TextView tvActiveAccountName;
+    private TextView tvActiveAccountPhone;
+
     private SwipeRefreshLayout swipeRefresh;
     private MaterialCardView cardCurrentSession;
     private ImageView ivCurrentDeviceIcon;
@@ -50,12 +57,18 @@ public class SessionsActivity extends AppCompatActivity implements
     private TextView tvCurrentLocationIp;
     private TextView tvCurrentLoginDate;
 
+    // 24-Hour Quarantine Notice Banner
+    private LinearLayout layoutQuarantineNotice;
+    private TextView tvQuarantineText;
+
     private TextView tvOtherSessionsHeader;
     private RecyclerView rvSessions;
     private LinearLayout layoutEmptySessions;
 
     private MaterialButton btnAuthorizeDevice;
     private MaterialButton btnTerminateAll;
+
+    private TdApi.Session currentActiveSession;
 
     // ZXing Barcode Scanner Launcher
     private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(
@@ -90,6 +103,7 @@ public class SessionsActivity extends AppCompatActivity implements
         setupRecyclerView();
         setupListeners();
 
+        updateAccountDisplay(telegramManager.getAccountStorage().getActiveAccount());
         loadUserData();
         loadSessions();
     }
@@ -98,16 +112,22 @@ public class SessionsActivity extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
         telegramManager.addAuthStateListener(this);
+        telegramManager.addAccountChangeListener(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         telegramManager.removeAuthStateListener(this);
+        telegramManager.removeAccountChangeListener(this);
     }
 
     private void initViews() {
-        tvUserSubtitle = findViewById(R.id.tvUserSubtitle);
+        btnAccountSwitcher = findViewById(R.id.btnAccountSwitcher);
+        tvAccountAvatarInitials = findViewById(R.id.tvAccountAvatarInitials);
+        tvActiveAccountName = findViewById(R.id.tvActiveAccountName);
+        tvActiveAccountPhone = findViewById(R.id.tvActiveAccountPhone);
+
         swipeRefresh = findViewById(R.id.swipeRefresh);
         cardCurrentSession = findViewById(R.id.cardCurrentSession);
         ivCurrentDeviceIcon = findViewById(R.id.ivCurrentDeviceIcon);
@@ -116,6 +136,9 @@ public class SessionsActivity extends AppCompatActivity implements
         tvCurrentLocationIp = findViewById(R.id.tvCurrentLocationIp);
         tvCurrentLoginDate = findViewById(R.id.tvCurrentLoginDate);
 
+        layoutQuarantineNotice = findViewById(R.id.layoutQuarantineNotice);
+        tvQuarantineText = findViewById(R.id.tvQuarantineText);
+
         tvOtherSessionsHeader = findViewById(R.id.tvOtherSessionsHeader);
         rvSessions = findViewById(R.id.rvSessions);
         layoutEmptySessions = findViewById(R.id.layoutEmptySessions);
@@ -123,7 +146,7 @@ public class SessionsActivity extends AppCompatActivity implements
         btnAuthorizeDevice = findViewById(R.id.btnAuthorizeDevice);
         btnTerminateAll = findViewById(R.id.btnTerminateAll);
 
-        swipeRefresh.setColorSchemeResources(R.color.tg_blue);
+        swipeRefresh.setColorSchemeResources(R.color.white);
     }
 
     private void setupRecyclerView() {
@@ -142,9 +165,43 @@ public class SessionsActivity extends AppCompatActivity implements
 
         findViewById(R.id.btnLogout).setOnClickListener(v -> showLogoutConfirmationDialog());
 
+        btnAccountSwitcher.setOnClickListener(v -> showAccountSwitcher());
+
         btnAuthorizeDevice.setOnClickListener(v -> checkCameraAndScan());
 
         btnTerminateAll.setOnClickListener(v -> showTerminateAllConfirmationDialog());
+    }
+
+    private void showAccountSwitcher() {
+        AccountSwitchBottomSheet bottomSheet = new AccountSwitchBottomSheet();
+        bottomSheet.setOnAccountSelectedListener(account -> {
+            telegramManager.setActiveClient(account.getId());
+            if (!account.isAuthorized()) {
+                Intent intent = new Intent(this, AuthActivity.class);
+                intent.putExtra("account_id", account.getId());
+                startActivity(intent);
+            } else {
+                updateAccountDisplay(account);
+                loadUserData();
+                loadSessions();
+            }
+        });
+        bottomSheet.show(getSupportFragmentManager(), "AccountSwitchBottomSheet");
+    }
+
+    private void updateAccountDisplay(AccountModel account) {
+        if (account == null) return;
+        tvAccountAvatarInitials.setText(account.getInitials());
+        tvActiveAccountName.setText(account.getDisplayName());
+        String phone = account.getPhoneNumber();
+        tvActiveAccountPhone.setText(phone.isEmpty() ? "Signed in" : phone);
+    }
+
+    @Override
+    public void onActiveAccountChanged(AccountModel account) {
+        updateAccountDisplay(account);
+        loadUserData();
+        loadSessions();
     }
 
     private void loadUserData() {
@@ -165,19 +222,10 @@ public class SessionsActivity extends AppCompatActivity implements
     }
 
     private void bindUser(TdApi.User user) {
-        StringBuilder nameBuilder = new StringBuilder();
-        if (user.firstName != null && !user.firstName.isEmpty()) {
-            nameBuilder.append(user.firstName);
+        AccountModel active = telegramManager.getAccountStorage().getActiveAccount();
+        if (active != null) {
+            updateAccountDisplay(active);
         }
-        if (user.lastName != null && !user.lastName.isEmpty()) {
-            if (nameBuilder.length() > 0) nameBuilder.append(" ");
-            nameBuilder.append(user.lastName);
-        }
-        if (user.phoneNumber != null && !user.phoneNumber.isEmpty()) {
-            if (nameBuilder.length() > 0) nameBuilder.append(" • ");
-            nameBuilder.append("+").append(user.phoneNumber.replaceAll("^\\+", ""));
-        }
-        tvUserSubtitle.setText(nameBuilder.length() > 0 ? nameBuilder.toString() : "Authorized Account");
     }
 
     private void loadSessions() {
@@ -208,12 +256,12 @@ public class SessionsActivity extends AppCompatActivity implements
             }
         }
 
-        // Display current session in hero card
+        this.currentActiveSession = currentSession;
+
         if (currentSession != null) {
             bindCurrentSession(currentSession);
         }
 
-        // Display other sessions in RecyclerView
         sessionAdapter.setSessions(sessions.sessions);
         int otherCount = sessionAdapter.getOtherSessionsCount();
 
@@ -250,9 +298,29 @@ public class SessionsActivity extends AppCompatActivity implements
 
         tvCurrentLoginDate.setText("Logged in: " + TimeHelper.formatLastActive(session.logInDate));
 
-        // Click on current session to see details
+        // Calculate 24-hour quarantine status
+        checkAndDisplayQuarantineNotice(session.logInDate);
+
         final TdApi.Session finalCurrent = session;
         cardCurrentSession.setOnClickListener(v -> showSessionDetailsDialog(finalCurrent));
+    }
+
+    private void checkAndDisplayQuarantineNotice(int logInDateSeconds) {
+        long nowSeconds = System.currentTimeMillis() / 1000L;
+        long elapsedSeconds = nowSeconds - logInDateSeconds;
+        long quarantinePeriod = 86400L; // 24 hours in seconds
+
+        if (logInDateSeconds > 0 && elapsedSeconds < quarantinePeriod) {
+            long remainingSeconds = quarantinePeriod - elapsedSeconds;
+            long hours = remainingSeconds / 3600L;
+            long minutes = (remainingSeconds % 3600L) / 60L;
+
+            layoutQuarantineNotice.setVisibility(View.VISIBLE);
+            tvQuarantineText.setText("Telegram 24h protection active: Session termination available in "
+                    + hours + "h " + minutes + "m");
+        } else {
+            layoutQuarantineNotice.setVisibility(View.GONE);
+        }
     }
 
     // =========================================================================
@@ -294,7 +362,7 @@ public class SessionsActivity extends AppCompatActivity implements
                         newSession.deviceModel : "New device";
 
                 new MaterialAlertDialogBuilder(SessionsActivity.this)
-                        .setTitle("Device Authorized!")
+                        .setTitle("Device Authorized")
                         .setMessage("Successfully logged into " + deviceName + " using Telegram QR authorization.")
                         .setPositiveButton("OK", null)
                         .show();
@@ -340,7 +408,7 @@ public class SessionsActivity extends AppCompatActivity implements
     }
 
     // =========================================================================
-    // Terminate Session Actions
+    // Terminate Session Actions & 24h Quarantine Rule Handling
     // =========================================================================
 
     @Override
@@ -354,23 +422,27 @@ public class SessionsActivity extends AppCompatActivity implements
                 .setTitle("Terminate Session?")
                 .setMessage("Are you sure you want to log out " + session.deviceModel + " (" + session.applicationName + ")?")
                 .setNegativeButton("Cancel", null)
-                .setPositiveButton("Terminate", (dialog, which) -> {
-                    swipeRefresh.setRefreshing(true);
-                    telegramManager.terminateSession(session.id, new TelegramManager.Callback<Void>() {
-                        @Override
-                        public void onSuccess(Void result) {
-                            Toast.makeText(SessionsActivity.this, "Session terminated", Toast.LENGTH_SHORT).show();
-                            loadSessions();
-                        }
-
-                        @Override
-                        public void onError(int code, String message) {
-                            swipeRefresh.setRefreshing(false);
-                            Toast.makeText(SessionsActivity.this, "Failed to terminate: " + message, Toast.LENGTH_LONG).show();
-                        }
-                    });
-                })
+                .setPositiveButton("Terminate", (dialog, which) -> executeTerminateSession(session.id))
                 .show();
+    }
+
+    private void executeTerminateSession(long sessionId) {
+        swipeRefresh.setRefreshing(true);
+        telegramManager.terminateSession(sessionId, new TelegramManager.Callback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                swipeRefresh.setRefreshing(false);
+                Toast.makeText(SessionsActivity.this, "Session terminated successfully", Toast.LENGTH_SHORT).show();
+                // Refresh live list from Telegram servers after successful termination
+                loadSessions();
+            }
+
+            @Override
+            public void onError(int code, String message) {
+                swipeRefresh.setRefreshing(false);
+                handleTerminationError(code, message);
+            }
+        });
     }
 
     private void showTerminateAllConfirmationDialog() {
@@ -379,23 +451,63 @@ public class SessionsActivity extends AppCompatActivity implements
                 .setTitle("Terminate All Other Sessions?")
                 .setMessage("Are you sure you want to terminate all other active sessions (" + count + " device" + (count > 1 ? "s" : "") + ")?\n\nThis will immediately log out your account from all other phones, computers, and web browsers.")
                 .setNegativeButton("Cancel", null)
-                .setPositiveButton("Terminate All", (dialog, which) -> {
-                    swipeRefresh.setRefreshing(true);
-                    telegramManager.terminateAllOtherSessions(new TelegramManager.Callback<Void>() {
-                        @Override
-                        public void onSuccess(Void result) {
-                            Toast.makeText(SessionsActivity.this, "All other sessions have been terminated", Toast.LENGTH_SHORT).show();
-                            loadSessions();
-                        }
-
-                        @Override
-                        public void onError(int code, String message) {
-                            swipeRefresh.setRefreshing(false);
-                            Toast.makeText(SessionsActivity.this, "Failed: " + message, Toast.LENGTH_LONG).show();
-                        }
-                    });
-                })
+                .setPositiveButton("Terminate All", (dialog, which) -> executeTerminateAllOtherSessions())
                 .show();
+    }
+
+    private void executeTerminateAllOtherSessions() {
+        swipeRefresh.setRefreshing(true);
+        telegramManager.terminateAllOtherSessions(new TelegramManager.Callback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                swipeRefresh.setRefreshing(false);
+                Toast.makeText(SessionsActivity.this, "All other sessions terminated", Toast.LENGTH_SHORT).show();
+                // Refresh live list from Telegram servers after successful termination
+                loadSessions();
+            }
+
+            @Override
+            public void onError(int code, String message) {
+                swipeRefresh.setRefreshing(false);
+                handleTerminationError(code, message);
+            }
+        });
+    }
+
+    private void handleTerminationError(int code, String rawMessage) {
+        if (code == 406 || (rawMessage != null && rawMessage.contains("FRESH_RESET_AUTHORISATION_FORBIDDEN"))) {
+            // Detailed explanation of Telegram's strict 24-hour security restriction
+            String remainingInfo = "";
+            if (currentActiveSession != null && currentActiveSession.logInDate > 0) {
+                long now = System.currentTimeMillis() / 1000L;
+                long elapsed = now - currentActiveSession.logInDate;
+                if (elapsed < 86400L) {
+                    long remainingSeconds = 86400L - elapsed;
+                    long h = remainingSeconds / 3600L;
+                    long m = (remainingSeconds % 3600L) / 60L;
+                    remainingInfo = "\n\nTime remaining until termination is allowed: " + h + " hours " + m + " minutes.";
+                }
+            }
+
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Telegram Security Restriction")
+                    .setMessage("This session was logged in less than 24 hours ago.\n\nTo protect your account from hijacking, Telegram strictly forbids newly logged-in devices from terminating other sessions until 24 hours have passed."
+                            + remainingInfo + "\n\nYou can still terminate this session from an older authorized device (e.g., your primary smartphone or desktop app).")
+                    .setPositiveButton("Understood", null)
+                    .show();
+        } else if (rawMessage != null && rawMessage.contains("SESSION_REVOKED")) {
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Session Expired")
+                    .setMessage("This session has already been revoked or closed by the remote device.")
+                    .setPositiveButton("OK", (dialog, which) -> loadSessions())
+                    .show();
+        } else {
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Termination Failed")
+                    .setMessage("Telegram returned an error: " + rawMessage + " (Code " + code + ").")
+                    .setPositiveButton("OK", null)
+                    .show();
+        }
     }
 
     private void showSessionDetailsDialog(TdApi.Session session) {
@@ -451,7 +563,7 @@ public class SessionsActivity extends AppCompatActivity implements
     private void showLogoutConfirmationDialog() {
         new MaterialAlertDialogBuilder(this)
                 .setTitle("Log Out?")
-                .setMessage("Are you sure you want to log out of Telegram on this device? All local session data will be cleared.")
+                .setMessage("Are you sure you want to log out of Telegram on this device? All local session data for this account will be removed.")
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Log Out", (dialog, which) -> {
                     swipeRefresh.setRefreshing(true);
@@ -475,10 +587,13 @@ public class SessionsActivity extends AppCompatActivity implements
     @Override
     public void onAuthStateChanged(TdApi.AuthorizationState state) {
         if (state == null) return;
-        if (state.getConstructor() != TdApi.AuthorizationStateReady.CONSTRUCTOR) {
-            // Not authorized anymore, navigate back to AuthActivity
-            startActivity(new Intent(this, AuthActivity.class));
-            finish();
+        // Only navigate back to AuthActivity if Telegram explicitly revokes authorization or returns to phone wait
+        if (state.getConstructor() == TdApi.AuthorizationStateWaitPhoneNumber.CONSTRUCTOR) {
+            AccountModel active = telegramManager.getAccountStorage().getActiveAccount();
+            if (active != null && !active.isAuthorized()) {
+                startActivity(new Intent(this, AuthActivity.class));
+                finish();
+            }
         }
     }
 }

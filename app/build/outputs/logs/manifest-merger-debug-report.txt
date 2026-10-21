@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:2:1-41:12
-INJECTED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:2:1-41:12
-INJECTED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:2:1-41:12
-INJECTED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:2:1-41:12
+ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:2:1-42:12
+INJECTED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:2:1-42:12
+INJECTED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:2:1-42:12
+INJECTED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:2:1-42:12
 MERGED from [com.google.android.material:material:1.12.0] C:\Users\Mechatronics\.gradle\caches\9.1.0\transforms\42259a76d11976d1784ab73161119b7d\workspace\transformed\material-1.12.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.2.0] C:\Users\Mechatronics\.gradle\caches\9.1.0\transforms\a72d128b0531827d628c32a4671a25e1\workspace\transformed\constraintlayout-2.2.0\AndroidManifest.xml:2:1-9:12
 MERGED from [androidx.appcompat:appcompat-resources:1.7.0] C:\Users\Mechatronics\.gradle\caches\9.1.0\transforms\c72d1d44aa2f0cb3b5b7b7b99369e864\workspace\transformed\appcompat-resources-1.7.0\AndroidManifest.xml:2:1-7:12
@@ -80,8 +80,8 @@ MERGED from [com.journeyapps:zxing-android-embedded:4.3.0] C:\Users\Mechatronics
 	android:name
 		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:9:9-47
 application
-ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:12:5-39:19
-INJECTED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:12:5-39:19
+ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:12:5-40:19
+INJECTED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:12:5-40:19
 MERGED from [com.google.android.material:material:1.12.0] C:\Users\Mechatronics\.gradle\caches\9.1.0\transforms\42259a76d11976d1784ab73161119b7d\workspace\transformed\material-1.12.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.12.0] C:\Users\Mechatronics\.gradle\caches\9.1.0\transforms\42259a76d11976d1784ab73161119b7d\workspace\transformed\material-1.12.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.2.0] C:\Users\Mechatronics\.gradle\caches\9.1.0\transforms\a72d128b0531827d628c32a4671a25e1\workspace\transformed\constraintlayout-2.2.0\AndroidManifest.xml:7:5-20
@@ -105,49 +105,51 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\Mechatronics\.grad
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.13.0] C:\Users\Mechatronics\.gradle\caches\9.1.0\transforms\5bfe996c661d92463180eeb86733b723\workspace\transformed\core-1.13.0\AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:17:9-35
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:18:9-35
 	android:label
-		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:15:9-41
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:16:9-41
 	android:roundIcon
-		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:16:9-50
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:17:9-50
 	android:icon
-		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:14:9-45
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:15:9-45
 	android:allowBackup
-		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:13:9-35
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:14:9-35
 	android:theme
-		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:18:9-60
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:19:9-60
+	android:name
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:13:9-36
 activity#com.telegram.sessionmanager.MainActivity
-ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:20:9-28:20
+ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:21:9-29:20
 	android:exported
-		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:22:13-36
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:23:13-36
 	android:theme
-		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:23:13-64
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:24:13-64
 	android:name
-		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:21:13-41
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:22:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:24:13-27:29
+ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:25:13-28:29
 action#android.intent.action.MAIN
-ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:25:17-69
+ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:26:17-69
 	android:name
-		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:25:25-66
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:26:25-66
 category#android.intent.category.LAUNCHER
-ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:26:17-77
+ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:27:17-77
 	android:name
-		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:26:27-74
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:27:27-74
 activity#com.telegram.sessionmanager.ui.AuthActivity
-ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:30:9-33:58
+ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:31:9-34:58
 	android:windowSoftInputMode
-		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:33:13-55
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:34:13-55
 	android:exported
-		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:32:13-37
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:33:13-37
 	android:name
-		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:31:13-44
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:32:13-44
 activity#com.telegram.sessionmanager.ui.SessionsActivity
-ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:35:9-37:40
+ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:36:9-38:40
 	android:exported
-		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:37:13-37
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:38:13-37
 	android:name
-		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:36:13-48
+		ADDED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml:37:13-48
 uses-sdk
 INJECTED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from Z:\telegramSessionManager\app\src\main\AndroidManifest.xml

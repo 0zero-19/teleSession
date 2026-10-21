@@ -21,6 +21,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.telegram.sessionmanager.R;
+import com.telegram.sessionmanager.account.AccountModel;
 import com.telegram.sessionmanager.telegram.TelegramManager;
 import com.telegram.sessionmanager.util.QrHelper;
 import com.telegram.sessionmanager.util.SecurityHelper;
@@ -32,6 +33,7 @@ public class AuthActivity extends AppCompatActivity implements TelegramManager.A
     private TelegramManager telegramManager;
     private SecurityHelper securityHelper;
 
+    private TextView tvAuthAccountLabel;
     private MaterialButtonToggleGroup toggleAuthMethod;
     private MaterialCardView cardErrorBanner;
     private TextView tvErrorMessage;
@@ -69,11 +71,15 @@ public class AuthActivity extends AppCompatActivity implements TelegramManager.A
         telegramManager = TelegramManager.getInstance(this);
         securityHelper = new SecurityHelper(this);
 
+        String specificAccountId = getIntent().getStringExtra("account_id");
+        if (specificAccountId != null) {
+            telegramManager.setActiveClient(specificAccountId);
+        }
+
         initViews();
         setupListeners();
 
-        // Initialize TDLib client
-        telegramManager.initialize();
+        updateAccountHeader();
     }
 
     @Override
@@ -89,6 +95,7 @@ public class AuthActivity extends AppCompatActivity implements TelegramManager.A
     }
 
     private void initViews() {
+        tvAuthAccountLabel = findViewById(R.id.tvAuthAccountLabel);
         toggleAuthMethod = findViewById(R.id.toggleAuthMethod);
         cardErrorBanner = findViewById(R.id.cardErrorBanner);
         tvErrorMessage = findViewById(R.id.tvErrorMessage);
@@ -122,6 +129,13 @@ public class AuthActivity extends AppCompatActivity implements TelegramManager.A
         findViewById(R.id.btnDismissError).setOnClickListener(v -> hideError());
     }
 
+    private void updateAccountHeader() {
+        AccountModel active = telegramManager.getAccountStorage().getActiveAccount();
+        if (active != null) {
+            tvAuthAccountLabel.setText("Sign In • " + active.getDisplayName());
+        }
+    }
+
     private void setupListeners() {
         toggleAuthMethod.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (!isChecked) return;
@@ -145,7 +159,7 @@ public class AuthActivity extends AppCompatActivity implements TelegramManager.A
                 @Override
                 public void onSuccess(Void result) {
                     setLoading(false);
-                    Toast.makeText(AuthActivity.this, "Code resent successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AuthActivity.this, "Code resent", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -173,7 +187,6 @@ public class AuthActivity extends AppCompatActivity implements TelegramManager.A
             return;
         }
 
-        // Clean up common formatted characters
         String cleanPhone = phone.replaceAll("[\\s()-]", "");
         if (!cleanPhone.startsWith("+")) {
             cleanPhone = "+" + cleanPhone;
@@ -272,7 +285,12 @@ public class AuthActivity extends AppCompatActivity implements TelegramManager.A
 
         switch (state.getConstructor()) {
             case TdApi.AuthorizationStateReady.CONSTRUCTOR:
-                // User authorized! Navigate to Sessions screen
+                // User authorized! Mark account authorized and navigate to Sessions
+                AccountModel active = telegramManager.getAccountStorage().getActiveAccount();
+                if (active != null) {
+                    active.setAuthorized(true);
+                    telegramManager.getAccountStorage().saveAccount(active);
+                }
                 startActivity(new Intent(this, SessionsActivity.class));
                 finish();
                 break;
@@ -284,7 +302,6 @@ public class AuthActivity extends AppCompatActivity implements TelegramManager.A
                 toggleAuthMethod.check(R.id.btnMethodQr);
                 showOnlyContainer(containerQr);
 
-                // Render QR code
                 Bitmap qrBitmap = QrHelper.generateQrBitmap(qrState.link, 600, 600);
                 if (qrBitmap != null) {
                     ivQrCode.setImageBitmap(qrBitmap);
@@ -312,7 +329,7 @@ public class AuthActivity extends AppCompatActivity implements TelegramManager.A
                 if (pwdState.passwordHint != null && !pwdState.passwordHint.isEmpty()) {
                     tvPasswordHint.setText("Password Hint: " + pwdState.passwordHint);
                 } else {
-                    tvPasswordHint.setText("Your account is protected by two-step verification.");
+                    tvPasswordHint.setText("Account protected by two-step verification.");
                 }
                 etPassword.requestFocus();
                 break;
@@ -369,13 +386,13 @@ public class AuthActivity extends AppCompatActivity implements TelegramManager.A
         if (raw.contains("PHONE_NUMBER_INVALID")) {
             return "Invalid phone number. Ensure it includes country code (e.g., +1...).";
         } else if (raw.contains("PHONE_CODE_INVALID") || raw.contains("PHONE_CODE_EMPTY")) {
-            return "The confirmation code is incorrect. Please double-check.";
+            return "The confirmation code is incorrect. Please check and retry.";
         } else if (raw.contains("PHONE_CODE_EXPIRED")) {
             return "Confirmation code expired. Please request a new one.";
         } else if (raw.contains("PASSWORD_HASH_INVALID")) {
             return "Incorrect 2FA password. Please try again.";
         } else if (raw.contains("FLOOD_WAIT")) {
-            return "Too many requests from this device: " + raw + ". Please wait a moment.";
+            return "Too many requests from this device (" + raw + "). Please wait a moment.";
         }
         return raw;
     }
@@ -398,7 +415,7 @@ public class AuthActivity extends AppCompatActivity implements TelegramManager.A
             securityHelper.resetApiCredentials();
             etApiId.setText(String.valueOf(SecurityHelper.DEFAULT_API_ID));
             etApiHash.setText(SecurityHelper.DEFAULT_API_HASH);
-            Toast.makeText(this, "Reset to default official credentials", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Reset to default credentials", Toast.LENGTH_SHORT).show();
         });
 
         btnSave.setOnClickListener(v -> {
@@ -415,7 +432,7 @@ public class AuthActivity extends AppCompatActivity implements TelegramManager.A
                 securityHelper.setApiId(apiId);
                 securityHelper.setApiHash(hashStr);
                 dialog.dismiss();
-                Toast.makeText(this, "Saved! Restarting Telegram client...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Saved! Restarting client...", Toast.LENGTH_SHORT).show();
                 telegramManager.restartClient();
             } catch (NumberFormatException e) {
                 Toast.makeText(this, "API ID must be a valid number", Toast.LENGTH_SHORT).show();

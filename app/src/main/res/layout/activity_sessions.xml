@@ -4,19 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_dark">
+    android:background="@color/glass_bg_black">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_dark"
+        android:background="@color/glass_bg_black"
         app:elevation="0dp">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/bg_dark">
+            android:background="@color/glass_bg_black">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -25,44 +25,92 @@
                 android:orientation="horizontal"
                 android:paddingEnd="16dp">
 
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:src="@drawable/ic_launcher" />
-
-                <LinearLayout
+                <!-- Account Switcher Pill Button -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnAccountSwitcher"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
+                    android:layout_height="44dp"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/glass_surface_1"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/glass_stroke_subtle"
+                    app:strokeWidth="1dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Active Sessions"
-                        android:textColor="@color/text_primary"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="10dp">
 
-                    <TextView
-                        android:id="@+id/tvUserSubtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
-                        tools:text="+1 (555) 019-2834 • Alex" />
-                </LinearLayout>
+                        <FrameLayout
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:background="@drawable/bg_glass_avatar">
 
+                            <TextView
+                                android:id="@+id/tvAccountAvatarInitials"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:textColor="@color/white"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                tools:text="TG" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvActiveAccountName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:textColor="@color/white"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                tools:text="Alexey" />
+
+                            <TextView
+                                android:id="@+id/tvActiveAccountPhone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:textColor="@color/mono_text_secondary"
+                                android:textSize="10sp"
+                                tools:text="+7 999 123 4567" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_account_switch"
+                            app:tint="@color/mono_text_secondary" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Refresh Button -->
                 <ImageButton
                     android:id="@+id/btnRefresh"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Refresh"
                     android:src="@drawable/ic_refresh"
-                    app:tint="@color/text_secondary" />
+                    app:tint="@color/white" />
 
+                <!-- Logout Button -->
                 <ImageButton
                     android:id="@+id/btnLogout"
                     android:layout_width="40dp"
@@ -71,11 +119,11 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Log Out"
                     android:src="@drawable/ic_logout"
-                    app:tint="@color/color_danger" />
+                    app:tint="@color/mono_text_secondary" />
             </LinearLayout>
         </com.google.android.material.appbar.MaterialToolbar>
 
-        <!-- Action Header Buttons -->
+        <!-- Quick Action Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -83,23 +131,23 @@
             android:paddingHorizontal="16dp"
             android:paddingBottom="12dp">
 
-            <!-- Primary Action: Link / Authorize another device via QR -->
+            <!-- Primary Action: Link Device via QR -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAuthorizeDevice"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:backgroundTint="@color/tg_blue"
+                android:backgroundTint="@color/white"
                 android:text="Link Device via QR Code"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:textSize="14sp"
                 android:textStyle="bold"
-                app:cornerRadius="14dp"
+                app:cornerRadius="16dp"
                 app:icon="@drawable/ic_qr_code"
                 app:iconGravity="textStart"
                 app:iconPadding="10dp"
-                app:iconSize="20dp"
-                app:iconTint="@color/white" />
+                app:iconSize="18dp"
+                app:iconTint="@color/black" />
 
             <!-- Secondary Action: Terminate All Others -->
             <com.google.android.material.button.MaterialButton
@@ -110,15 +158,15 @@
                 android:layout_marginTop="8dp"
                 android:text="Terminate All Other Sessions"
                 android:textAllCaps="false"
-                android:textColor="@color/color_danger"
+                android:textColor="@color/white"
                 android:textSize="13sp"
-                app:cornerRadius="12dp"
+                app:cornerRadius="14dp"
                 app:icon="@drawable/ic_terminate_all"
                 app:iconGravity="textStart"
                 app:iconPadding="8dp"
-                app:iconSize="18dp"
-                app:iconTint="@color/color_danger"
-                app:strokeColor="@color/color_danger" />
+                app:iconSize="16dp"
+                app:iconTint="@color/white"
+                app:strokeColor="@color/glass_stroke_medium" />
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -137,7 +185,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="32dp">
+                android:paddingBottom="36dp">
 
                 <!-- Section: Current Session Header -->
                 <TextView
@@ -146,23 +194,22 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:letterSpacing="0.05"
+                    android:letterSpacing="0.08"
                     android:text="THIS DEVICE"
-                    android:textColor="@color/tg_blue"
-                    android:textSize="12sp"
+                    android:textColor="@color/mono_text_secondary"
+                    android:textSize="11sp"
                     android:textStyle="bold" />
 
-                <!-- Current Session Card -->
+                <!-- Current Session Card (Glassmorphism Highlight) -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardCurrentSession"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
-                    android:background="@drawable/bg_card_highlight_rounded"
-                    app:cardBackgroundColor="@color/bg_card_highlight"
-                    app:cardCornerRadius="16dp"
+                    app:cardBackgroundColor="@color/glass_surface_2"
+                    app:cardCornerRadius="18dp"
                     app:cardElevation="0dp"
-                    app:strokeColor="@color/tg_blue"
+                    app:strokeColor="@color/glass_stroke_medium"
                     app:strokeWidth="1.5dp">
 
                     <LinearLayout
@@ -184,17 +231,17 @@
 
                                 <ImageView
                                     android:id="@+id/ivCurrentDeviceIcon"
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
+                                    android:layout_width="22dp"
+                                    android:layout_height="22dp"
                                     android:layout_gravity="center"
                                     android:src="@drawable/ic_device_phone"
-                                    app:tint="@color/badge_current_text" />
+                                    app:tint="@color/white" />
                             </FrameLayout>
 
                             <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
+                                android:layout_marginStart="14dp"
                                 android:layout_weight="1"
                                 android:orientation="vertical">
 
@@ -202,19 +249,19 @@
                                     android:id="@+id/tvCurrentDeviceModel"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textColor="@color/text_primary"
-                                    android:textSize="16sp"
+                                    android:textColor="@color/white"
+                                    android:textSize="15sp"
                                     android:textStyle="bold"
-                                    tools:text="Google Pixel 8 Pro (Android 14)" />
+                                    tools:text="Pixel 8 Pro (Android 14)" />
 
                                 <TextView
                                     android:id="@+id/tvCurrentAppName"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
-                                    android:textColor="@color/text_secondary"
-                                    android:textSize="13sp"
-                                    tools:text="Telegram Session Manager 1.0.0" />
+                                    android:textColor="@color/mono_text_secondary"
+                                    android:textSize="12sp"
+                                    tools:text="Telegram Session Manager 1.0" />
                             </LinearLayout>
 
                             <TextView
@@ -223,23 +270,54 @@
                                 android:background="@drawable/bg_badge_current"
                                 android:paddingHorizontal="10dp"
                                 android:paddingVertical="4dp"
-                                android:text="Online"
-                                android:textColor="@color/badge_current_text"
+                                android:text="Active Now"
+                                android:textColor="@color/white"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <!-- 24-Hour Quarantine Notice Banner -->
+                        <LinearLayout
+                            android:id="@+id/layoutQuarantineNotice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:background="@drawable/bg_badge_danger"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="8dp"
+                            android:visibility="gone"
+                            tools:visibility="visible">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_info"
+                                app:tint="@color/white" />
+
+                            <TextView
+                                android:id="@+id/tvQuarantineText"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_weight="1"
+                                android:textColor="@color/mono_text_secondary"
+                                android:textSize="11sp"
+                                tools:text="Telegram 24h protection active: Session termination available in 14h 20m" />
                         </LinearLayout>
 
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginVertical="12dp"
-                            android:background="@color/border_dark" />
+                            android:background="@color/glass_stroke_subtle" />
 
                         <TextView
                             android:id="@+id/tvCurrentLocationIp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/text_primary"
+                            android:textColor="@color/white"
                             android:textSize="13sp"
                             tools:text="192.168.1.100 • Local Network" />
 
@@ -248,7 +326,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:textColor="@color/text_muted"
+                            android:textColor="@color/mono_text_muted"
                             android:textSize="12sp"
                             tools:text="Logged in: Today, 14:10" />
                     </LinearLayout>
@@ -258,7 +336,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginBottom="8dp"
                     android:paddingHorizontal="20dp">
 
@@ -266,10 +344,10 @@
                         android:id="@+id/tvOtherSessionsHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:letterSpacing="0.05"
+                        android:letterSpacing="0.08"
                         android:text="OTHER ACTIVE SESSIONS (0)"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
+                        android:textColor="@color/mono_text_secondary"
+                        android:textSize="11sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -279,7 +357,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
-                    tools:itemCount="3"
+                    tools:itemCount="2"
                     tools:listitem="@layout/item_session" />
 
                 <!-- Empty State Container -->
@@ -293,28 +371,28 @@
                     android:visibility="gone">
 
                     <ImageView
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:src="@drawable/ic_verified"
-                        app:tint="@color/text_muted" />
+                        app:tint="@color/mono_text_muted" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="No Other Active Sessions"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginTop="4dp"
                         android:gravity="center"
-                        android:text="Your Telegram account is currently only active on this device."
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp" />
+                        android:text="This account is currently active only on this device."
+                        android:textColor="@color/mono_text_secondary"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
             </LinearLayout>

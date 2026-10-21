@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_dark">
+    android:background="@color/glass_bg_black">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -20,15 +20,15 @@
             android:paddingTop="36dp"
             android:paddingBottom="24dp">
 
-            <!-- Logo & Brand Header -->
+            <!-- Logo & Brand Header in Monochrome Glass -->
             <FrameLayout
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:background="@drawable/bg_badge_official">
+                android:layout_width="68dp"
+                android:layout_height="68dp"
+                android:background="@drawable/bg_badge_current">
 
                 <ImageView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_launcher" />
             </FrameLayout>
@@ -38,17 +38,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Telegram Sessions"
-                android:textColor="@color/text_primary"
-                android:textSize="22sp"
+                android:textColor="@color/white"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tvAuthAccountLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:gravity="center"
-                android:text="Secure Telegram Session Audit &amp; Management"
-                android:textColor="@color/text_secondary"
+                android:text="Account Authorization"
+                android:textColor="@color/mono_text_secondary"
                 android:textSize="13sp" />
 
             <!-- Method Switcher: Phone vs QR Login -->
@@ -69,12 +70,13 @@
                     android:layout_weight="1"
                     android:text="Phone Login"
                     android:textAllCaps="false"
-                    android:textColor="@color/text_primary"
+                    android:textColor="@color/white"
                     android:textSize="13sp"
                     app:icon="@drawable/ic_phone"
                     app:iconPadding="6dp"
                     app:iconSize="16dp"
-                    app:iconTint="@color/tg_blue" />
+                    app:iconTint="@color/white"
+                    app:strokeColor="@color/glass_stroke_medium" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnMethodQr"
@@ -84,25 +86,26 @@
                     android:layout_weight="1"
                     android:text="QR Code Login"
                     android:textAllCaps="false"
-                    android:textColor="@color/text_primary"
+                    android:textColor="@color/white"
                     android:textSize="13sp"
                     app:icon="@drawable/ic_qr_code"
                     app:iconPadding="6dp"
                     app:iconSize="16dp"
-                    app:iconTint="@color/tg_blue" />
+                    app:iconTint="@color/white"
+                    app:strokeColor="@color/glass_stroke_medium" />
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
-            <!-- Error Banner -->
+            <!-- Error Banner in Monochrome Glass -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardErrorBanner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:visibility="gone"
-                app:cardBackgroundColor="@color/color_danger_bg"
-                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="@color/glass_surface_2"
+                app:cardCornerRadius="14dp"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/color_danger"
+                app:strokeColor="@color/glass_stroke_medium"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -116,7 +119,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_terminate"
-                        app:tint="@color/color_danger" />
+                        app:tint="@color/white" />
 
                     <TextView
                         android:id="@+id/tvErrorMessage"
@@ -125,7 +128,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_weight="1"
                         android:textColor="@color/white"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
                         tools:text="Invalid confirmation code. Please check and retry." />
 
                     <ImageButton
@@ -134,17 +137,17 @@
                         android:layout_height="28dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_terminate"
-                        app:tint="@color/text_muted" />
+                        app:tint="@color/mono_text_muted" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <!-- Loading Progress Bar -->
             <ProgressBar
                 android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_marginTop="16dp"
-                android:indeterminateTint="@color/tg_blue"
+                android:indeterminateTint="@color/white"
                 android:visibility="gone" />
 
             <!-- ================= STEP 1: PHONE NUMBER INPUT ================= -->
@@ -160,7 +163,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Phone Number"
-                    android:textColor="@color/text_primary"
+                    android:textColor="@color/white"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -169,7 +172,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="Include country code (e.g., +1 234 567 8900 or +7 999 123 4567)"
-                    android:textColor="@color/text_muted"
+                    android:textColor="@color/mono_text_muted"
                     android:textSize="12sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -178,13 +181,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    app:boxCornerRadiusBottomEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusTopStart="12dp"
-                    app:boxStrokeColor="@color/tg_blue"
+                    app:boxCornerRadiusBottomEnd="14dp"
+                    app:boxCornerRadiusBottomStart="14dp"
+                    app:boxCornerRadiusTopEnd="14dp"
+                    app:boxCornerRadiusTopStart="14dp"
+                    app:boxStrokeColor="@color/white"
                     app:startIconDrawable="@drawable/ic_phone"
-                    app:startIconTint="@color/tg_blue">
+                    app:startIconTint="@color/white">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPhone"
@@ -193,8 +196,8 @@
                         android:hint="+7 999 123 45 67"
                         android:inputType="phone"
                         android:maxLines="1"
-                        android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_muted" />
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/mono_text_muted" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
@@ -202,11 +205,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:layout_marginTop="16dp"
-                    android:backgroundTint="@color/tg_blue"
+                    android:backgroundTint="@color/white"
                     android:text="Send Code"
                     android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     app:cornerRadius="14dp" />
             </LinearLayout>
@@ -224,7 +227,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Confirmation Code"
-                    android:textColor="@color/text_primary"
+                    android:textColor="@color/white"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -233,8 +236,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Code sent to Telegram on your other devices or via SMS"
-                    android:textColor="@color/text_muted"
+                    android:text="Code sent via Telegram or SMS"
+                    android:textColor="@color/mono_text_muted"
                     android:textSize="12sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -243,13 +246,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    app:boxCornerRadiusBottomEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusTopStart="12dp"
-                    app:boxStrokeColor="@color/tg_blue"
+                    app:boxCornerRadiusBottomEnd="14dp"
+                    app:boxCornerRadiusBottomStart="14dp"
+                    app:boxCornerRadiusTopEnd="14dp"
+                    app:boxCornerRadiusTopStart="14dp"
+                    app:boxStrokeColor="@color/white"
                     app:startIconDrawable="@drawable/ic_verified"
-                    app:startIconTint="@color/tg_blue">
+                    app:startIconTint="@color/white">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etCode"
@@ -259,8 +262,8 @@
                         android:inputType="number"
                         android:letterSpacing="0.2"
                         android:maxLines="1"
-                        android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_muted" />
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/mono_text_muted" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
@@ -268,11 +271,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:layout_marginTop="16dp"
-                    android:backgroundTint="@color/tg_blue"
+                    android:backgroundTint="@color/white"
                     android:text="Verify Code"
                     android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     app:cornerRadius="14dp" />
 
@@ -289,14 +292,14 @@
                         android:layout_height="wrap_content"
                         android:padding="8dp"
                         android:text="Resend Code"
-                        android:textColor="@color/tg_blue"
+                        android:textColor="@color/white"
                         android:textSize="13sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=" • "
-                        android:textColor="@color/text_muted" />
+                        android:textColor="@color/mono_text_muted" />
 
                     <TextView
                         android:id="@+id/btnBackToPhone"
@@ -304,7 +307,7 @@
                         android:layout_height="wrap_content"
                         android:padding="8dp"
                         android:text="Change Phone"
-                        android:textColor="@color/text_secondary"
+                        android:textColor="@color/mono_text_secondary"
                         android:textSize="13sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -322,7 +325,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Two-Step Verification"
-                    android:textColor="@color/text_primary"
+                    android:textColor="@color/white"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -331,8 +334,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Your account is protected by an additional cloud password."
-                    android:textColor="@color/text_muted"
+                    android:text="Account protected by cloud password."
+                    android:textColor="@color/mono_text_muted"
                     android:textSize="12sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -341,15 +344,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    app:boxCornerRadiusBottomEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusTopStart="12dp"
-                    app:boxStrokeColor="@color/tg_blue"
+                    app:boxCornerRadiusBottomEnd="14dp"
+                    app:boxCornerRadiusBottomStart="14dp"
+                    app:boxCornerRadiusTopEnd="14dp"
+                    app:boxCornerRadiusTopStart="14dp"
+                    app:boxStrokeColor="@color/white"
                     app:passwordToggleEnabled="true"
-                    app:passwordToggleTint="@color/text_muted"
+                    app:passwordToggleTint="@color/mono_text_secondary"
                     app:startIconDrawable="@drawable/ic_lock"
-                    app:startIconTint="@color/tg_blue">
+                    app:startIconTint="@color/white">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPassword"
@@ -358,8 +361,8 @@
                         android:hint="Enter Cloud Password"
                         android:inputType="textPassword"
                         android:maxLines="1"
-                        android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_muted" />
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/mono_text_muted" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
@@ -367,11 +370,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:layout_marginTop="16dp"
-                    android:backgroundTint="@color/tg_blue"
+                    android:backgroundTint="@color/white"
                     android:text="Unlock &amp; Sign In"
                     android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     app:cornerRadius="14dp" />
             </LinearLayout>
@@ -392,8 +395,8 @@
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="0dp"
-                    app:strokeColor="@color/tg_blue"
-                    app:strokeWidth="2dp">
+                    app:strokeColor="@color/glass_stroke_medium"
+                    app:strokeWidth="1.5dp">
 
                     <ImageView
                         android:id="@+id/ivQrCode"
@@ -408,7 +411,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="Scan with Telegram"
-                    android:textColor="@color/text_primary"
+                    android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -418,8 +421,8 @@
                     android:layout_marginTop="8dp"
                     android:gravity="center"
                     android:lineSpacingExtra="4dp"
-                    android:text="1. Open Telegram on your phone\n2. Go to Settings > Devices > Link Desktop Device\n3. Point your camera at this screen"
-                    android:textColor="@color/text_secondary"
+                    android:text="1. Open Telegram on your phone\n2. Settings > Devices > Link Desktop Device\n3. Point your camera at this screen"
+                    android:textColor="@color/mono_text_secondary"
                     android:textSize="13sp" />
 
                 <com.google.android.material.button.MaterialButton
@@ -429,9 +432,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Refresh QR Code"
-                    android:textColor="@color/tg_blue"
+                    android:textColor="@color/white"
                     app:icon="@drawable/ic_refresh"
-                    app:iconTint="@color/tg_blue" />
+                    app:iconTint="@color/white" />
             </LinearLayout>
 
             <!-- Bottom Note: Custom API Credentials Settings -->
@@ -441,8 +444,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
                 android:padding="8dp"
-                android:text="Telegram API ID &amp; Hash Settings"
-                android:textColor="@color/text_muted"
+                android:text="API Credentials Configuration"
+                android:textColor="@color/mono_text_muted"
                 android:textSize="12sp" />
 
         </LinearLayout>
