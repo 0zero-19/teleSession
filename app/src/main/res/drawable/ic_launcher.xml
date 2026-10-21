@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#0F172A"
+        android:pathData="M0,0h108v108h-108z" />
+    <path
+        android:fillColor="#24A1DE"
+        android:pathData="M54,18 C34.12,18 18,34.12 18,54 C18,73.88 34.12,90 54,90 C73.88,90 90,73.88 90,54 C90,34.12 73.88,18 54,18 Z" />
+    <!-- Paper airplane icon -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M37,52 L68,39 C69.4,38.4 70.6,39.6 70.1,41 L64.8,66 C64.4,67.8 62.3,68.4 61,67.3 L53.5,61.2 L49.8,64.8 C49.2,65.4 48.2,65 48.2,64.1 L48.2,57.5 L64.2,43 L44.3,55.5 L37.2,53.2 C35.7,52.7 35.6,50.6 37,52 Z" />
+</vector>

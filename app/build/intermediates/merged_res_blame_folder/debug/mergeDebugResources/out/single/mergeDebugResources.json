@@ -1,0 +1,102 @@
+[
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_ic_lock.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/ic_lock.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_ic_device_laptop.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/ic_device_laptop.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_bg_card_rounded.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/bg_card_rounded.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_bg_card_highlight_rounded.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/bg_card_highlight_rounded.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/layout_dialog_session_details.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/layout/dialog_session_details.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_bg_badge_official.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/bg_badge_official.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_ic_verified.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/ic_verified.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_bg_badge_danger.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/bg_badge_danger.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_ic_info.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/ic_info.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_ic_device_web.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/ic_device_web.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_ic_qr_code.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/ic_qr_code.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/layout_activity_auth.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/layout/activity_auth.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_ic_phone.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/ic_phone.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_ic_refresh.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/ic_refresh.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_ic_terminate.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/ic_terminate.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/layout_activity_sessions.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/layout/activity_sessions.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_ic_logout.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/ic_logout.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/layout_dialog_manual_qr_link.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/layout/dialog_manual_qr_link.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/layout_item_session.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/layout/item_session.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/layout_dialog_custom_api.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/layout/dialog_custom_api.xml"
+    },
+    {
+        "merged": "C:\\Users\\Mechatronics\\.gradle\\daemon\\9.1.0\\com.telegram.sessionmanager.app-debug-34:\\drawable_ic_launcher.xml.flat",
+        "source": "C:\\Users\\Mechatronics\\.gradle\\daemon\\9.1.0\\com.telegram.sessionmanager.app-main-36:\\drawable\\ic_launcher.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_ic_terminate_all.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/ic_terminate_all.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_ic_device_phone.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/ic_device_phone.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_bg_badge_current.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/bg_badge_current.xml"
+    },
+    {
+        "merged": "com.telegram.sessionmanager.app-debug-34:/drawable_ic_device_other.xml.flat",
+        "source": "com.telegram.sessionmanager.app-main-36:/drawable/ic_device_other.xml"
+    }
+]
